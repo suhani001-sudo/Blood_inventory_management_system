@@ -1,0 +1,78 @@
+import React, { useEffect, useState } from 'react';
+import api from '../services/api';
+
+const HospitalHistory = () => {
+  const [requests, setRequests] = useState([]);
+
+  useEffect(() => {
+    api
+      .get('/request')
+      .then((res) => setRequests(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const history = requests.filter((r) => r.status !== 'pending');
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h2 className="font-display text-xl font-semibold tracking-tight text-slate-900">
+          Request history
+        </h2>
+        <p className="mt-1 text-xs text-slate-500">
+          See a history of approved and rejected requests handled by your hospital.
+        </p>
+      </div>
+      <div className="glass-panel overflow-hidden">
+        <div className="max-h-[460px] overflow-auto">
+          <table className="min-w-full text-xs">
+            <thead className="bg-slate-50 text-[11px] uppercase tracking-[0.14em] text-slate-500">
+              <tr>
+                <th className="px-3 py-2 text-left">Requester</th>
+                <th className="px-3 py-2 text-left">Blood Group</th>
+                <th className="px-3 py-2 text-left">Qty</th>
+                <th className="px-3 py-2 text-left">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.map((r) => (
+                <tr
+                  key={r._id}
+                  className="border-b border-slate-50/80 last:border-none hover:bg-slate-50/60"
+                >
+                  <td className="px-3 py-2">{r.requester?.name}</td>
+                  <td className="px-3 py-2">{r.bloodGroup}</td>
+                  <td className="px-3 py-2">{r.quantity}</td>
+                  <td className="px-3 py-2">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                        r.status === 'approved'
+                          ? 'bg-emerald-50 text-emerald-600'
+                          : 'bg-rose-50 text-rose-600'
+                      }`}
+                    >
+                      {r.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {history.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-3 py-4 text-center text-[11px] text-slate-500"
+                  >
+                    No historical requests yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HospitalHistory;
+
