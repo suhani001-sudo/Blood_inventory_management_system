@@ -1,16 +1,10 @@
-import axios from 'axios';
+import API from '../api/axiosInstance';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('bb_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+const api = {
+  ...API,
+  // Maintain backward compatibility for existing imports
+  interceptors: API.interceptors,
+};
 
 export default api;
 
