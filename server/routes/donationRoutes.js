@@ -4,6 +4,11 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+// Test route
+router.get('/', (req, res) => {
+  res.json({ message: 'Donation API is working successfully!' });
+});
+
 // User routes
 router.post('/', protect, createDonation);
 router.get('/user', protect, getUserDonations);
