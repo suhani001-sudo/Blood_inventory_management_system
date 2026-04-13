@@ -53,7 +53,7 @@ const SplashScreen = () => {
 
             {/* Logo */}
             <motion.img
-              src="/images/Untitled design.png"
+              src="/Untitled design.png"
               alt="BloodLink Logo"
               className="w-[220px] md:w-[260px] lg:w-[300px]"
               initial={{ scale: 0.9, opacity: 0 }}
