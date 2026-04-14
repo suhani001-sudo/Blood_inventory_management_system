@@ -16,34 +16,43 @@ const app = express();
 connectDB();
 
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  process.env.CLIENT_URL,
+  "http://localhost:5173", 
+  "http://localhost:3000", 
+  "https://blood-inventory-management-system.vercel.app", 
+  process.env.CLIENT_URL, 
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., Postman, mobile apps, curl)
-      if (!origin) {
-        return callback(null, true);
-      }
+// CORS Middleware
+const corsOptions = {
+  origin: function (origin, callback) {
+    
+    if (!origin) {
+      return callback(null, true);
+    }
 
-      // Allow requests from permitted origins
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+    const normalizedOrigin = origin.replace(/\/$/, "");
 
-      // Log blocked origins for debugging
-      console.error(`❌ CORS blocked request from: ${origin}`);
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-app.options("*", cors());
+    const normalizedAllowedOrigins = allowedOrigins.map((o) =>
+      o.replace(/\/$/, "")
+    );
+
+    if (normalizedAllowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    console.error(`❌ CORS blocked request from: ${origin}`);
+    return callback(
+      new Error(`CORS policy does not allow access from origin: ${origin}`)
+    );
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
 app.use(express.json());
 
 app.use(morgan("dev"));
