@@ -36,7 +36,7 @@ const Login = () => {
         >
           <div className="flex flex-col items-center mb-6">
             <img 
-              src="/images/Untitled design.png" 
+              src="/Untitled design.png" 
               alt="BloodLink" 
               className="w-20 h-20 object-contain mb-4"
             />
